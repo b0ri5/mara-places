@@ -1,0 +1,47 @@
+<html>
+  <head>
+  <script type="text/javascript"
+    src="https://code.jquery.com/jquery-latest.min.js">
+  </script>
+
+  <script type="text/javascript">
+    var addLocation = function(locationInfo) {
+       $('#entries').prepend($('<li>', {
+         text: 'Location: ' + locationInfo.Location + ' ' + 'Note: ' + locationInfo.Note
+       }));
+    };
+    $(document).ready(function() {
+      $.get('/maraplace', function(data) {
+        for (var i = 0; i < data.length; i++) {
+          addLocation(data[i]);
+        }
+        console.log(data);
+      });
+      // button
+      $('button').click(function(){
+        var locationInfo = { 
+          'Location': $('#location').val(),
+          'Note': $('#note').val(),
+          'Date': new Date()
+        }
+        $.post('/maraplace', JSON.stringify(locationInfo))
+	  .success(function(data, status){
+            $('#status_message').text('Data submitted: ' + status);
+            addLocation(locationInfo);
+          })
+          .fail(function(data){
+            console.log(data);
+            $('#status_message').text('Submission failed.');
+          })
+      });
+    });
+  </script>
+  </head>
+  <body>
+    <div><textarea id="location" rows="3" cols="60"></textarea></div>
+    <div><textarea id="note" rows="3" cols="60"></textarea></div>
+    <button>Submit location</button>
+    <span id="status_message"></span>
+    <ul id="entries">
+  </body>
+</html>
