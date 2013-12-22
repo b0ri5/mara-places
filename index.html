@@ -59,7 +59,6 @@
     src="https://code.jquery.com/jquery-latest.min.js">
   </script>
 
-  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
   <script type="text/javascript">
 // Functions for manual_input
 var addLocation = function(locationInfo) {
@@ -94,17 +93,64 @@ $(document).ready(function() {
 });
 // [end of manual_input]
   </script>
+
+  <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
   <script type="text/javascript">
 // This example adds a search box to a map, using the Google Place Autocomplete
 // feature. People can enter geographical searches. The search box will return a
 // pick list containing a mix of places and predicted search terms.
 
+var makeIconImage = function(iconUrl) {
+  return {
+    url: iconUrl,
+    size: new google.maps.Size(71, 71),
+    origin: new google.maps.Point(0, 0),
+    anchor: new google.maps.Point(17, 34),
+    scaledSize: new google.maps.Size(25, 25)
+  }
+};
+
+var globals = {
+  map: null,
+  markers: [],
+  bounds: new google.maps.LatLngBounds(),
+  heartImage: makeIconImage("http://b.dryicons.com/images/icon_sets/valentines_icons_set/png/256x256/heart.png")
+};
+
+var addMarker = function(name, iconImage, location) {
+  var marker = new google.maps.Marker({
+    map: globals.map,
+    icon: iconImage,
+    title: name,
+    position: location
+  });
+  globals.markers.push(marker);
+  globals.bounds.extend(location);
+}
+
+var addHeartMarker = function(name, location) {
+  addMarker(name, globals.heartImage, location);
+}
+
+var refitBounds = function() {
+  globals.map.fitBounds(globals.bounds);
+}
+
+var clearMarkers = function() {
+  for (var i = 0, marker; marker = globals.markers[i]; i++) {
+    marker.setMap(null);
+  }
+  globals.markers = [];
+  globals.bounds = new google.maps.LatLngBounds();
+}
+
 function initialize() {
 
   var markers = [];
-  var map = new google.maps.Map(document.getElementById('map-canvas'), {
+  globals.map = new google.maps.Map(document.getElementById('map-canvas'), {
     mapTypeId: google.maps.MapTypeId.ROADMAP
   });
+  map = globals.map;
 
   var defaultBounds = new google.maps.LatLngBounds(
       new google.maps.LatLng(-33.8902, 151.1759),
@@ -124,37 +170,22 @@ function initialize() {
   // pick list. Retrieve the matching places for that item.
   google.maps.event.addListener(searchBox, 'places_changed', function() {
     var places = searchBox.getPlaces();
+    console.log(places);
 
-    for (var i = 0, marker; marker = markers[i]; i++) {
-      marker.setMap(null);
-    }
-
-    // For each place, get the icon, place name, and location.
-    markers = [];
-    var bounds = new google.maps.LatLngBounds();
+    clearMarkers();
+    /*
+    // For each place add a corresponding marker.
     for (var i = 0, place; place = places[i]; i++) {
-      var image = {
-        url: place.icon,
-        size: new google.maps.Size(71, 71),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17, 34),
-        scaledSize: new google.maps.Size(25, 25)
-      };
-
-      // Create a marker for each place.
-      var marker = new google.maps.Marker({
-        map: map,
-        icon: image,
-        title: place.name,
-        position: place.geometry.location
-      });
-
-      markers.push(marker);
-
-      bounds.extend(place.geometry.location);
+      addMarker(place.name, makeIconImage(place.icon), place.geometry.location);
     }
+*/
 
-    map.fitBounds(bounds);
+    // For the first object, add a heart marker.
+    if (places.length > 0) {
+      var firstPlace = places[0];
+      addHeartMarker(firstPlace.name, firstPlace.geometry.location);
+    }
+    refitBounds();
   });
   // [END region_getplaces]
 
