@@ -172,7 +172,11 @@ var addMarker = function(name, iconImage, location) {
     draggable: true
   });
   google.maps.event.addListener(marker, 'click', function() {
-    globals.infoWindow.content = makeBubbleHtml(location);
+    globals.infoWindow.content = makeBubbleHtml(marker.position);
+    globals.infoWindow.open(map, marker);
+  });
+  google.maps.event.addListener(marker, 'dragend', function() {
+    globals.infoWindow.content = makeBubbleHtml(marker.position);
     globals.infoWindow.open(map, marker);
   });
   globals.markers.push(marker);
