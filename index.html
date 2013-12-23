@@ -190,6 +190,17 @@ var addStaticMarker = function(text, location) {
   globals.bounds.extend(location);
 }
 
+var openBubble = function(marker) {
+  if (globals.infoWindow) {
+    globals.infoWindow.close();
+  }
+  globals.infoWindow = new google.maps.InfoWindow({
+    content: makeBubbleHtml(marker.position),
+    maxWidth: 240
+  });
+  globals.infoWindow.open(globals.map, marker);
+}
+
 var addMarker = function(name, iconImage, location) {
   var marker = new google.maps.Marker({
     map: globals.map,
@@ -199,14 +210,7 @@ var addMarker = function(name, iconImage, location) {
     draggable: true
   });
   google.maps.event.addListener(marker, 'click', function() {
-    if (globals.infoWindow) {
-      globals.infoWindow.close();
-    }
-    globals.infoWindow = new google.maps.InfoWindow({
-      content: makeBubbleHtml(marker.position),
-      maxWidth: 240
-    });
-    globals.infoWindow.open(map, marker);
+    openBubble(marker);
   });
   google.maps.event.addListener(marker, 'dragend', function() {
     globals.infoWindow.content = makeBubbleHtml(marker.position);
@@ -214,6 +218,7 @@ var addMarker = function(name, iconImage, location) {
   });
   globals.markers.push(marker);
   globals.bounds.extend(location);
+  openBubble(marker);
   return marker;
 }
 
