@@ -229,9 +229,10 @@ function initialize() {
   map = globals.map;
 
   var defaultBounds = new google.maps.LatLngBounds(
-      new google.maps.LatLng(-33.8902, 151.1759),
-      new google.maps.LatLng(-33.8474, 151.2631));
+      new google.maps.LatLng(-90, -180),
+      new google.maps.LatLng(90, 180));
   map.fitBounds(defaultBounds);
+
 
   // Create the search box and link it to the UI element.
   var input = /** @type {HTMLInputElement} */(
@@ -265,18 +266,7 @@ function initialize() {
     searchBox.setBounds(bounds);
   });
 
-// Retrieve all previous data from the server.
-/**  $.get('/maraplace', function(data) {
-    for (var i = 0; i < data.length; i++) {
-      addLocation(data[i]);
-      console.log(data[i].Location);
-      var latLng = parseLatLng(data[i].Location);
-      if (latLng) {
-        addStaticMarker(data[i].Note, latLng);
-      }
-    }
-    console.log(data);
-  }); **/
+  // Retrieve all previous data from the server.
   var success = function(data) {
     for (var i = 0; i < data.length; i++) {
       addLocation(data[i]);
@@ -293,16 +283,14 @@ function initialize() {
     success: success,
     async: false
   });
-  for (var i = 0; i < globals.markers.length; i++) {
-
+  if (globals.markers.length > 0) {
+    var bounds = new google.maps.LatLngBounds(globals.markers[0].position,
+      globals.markers[0].position);
+    for (var i = 0; i < globals.markers.length; i++) {
+      bounds.extend(globals.markers[i].position);
+    }
+    map.fitBounds(bounds);
   }
-  var defaultBounds = new google.maps.LatLngBounds(
-      new google.maps.LatLng(-33.8902, 151.1759),
-      new google.maps.LatLng(-33.8474, 151.2631));
-  map.fitBounds(defaultBounds);
-
-
-
 }
 
 google.maps.event.addDomListener(window, 'load', initialize);
