@@ -78,18 +78,11 @@ var addLocation = function(locationInfo) {
      text: 'Location: ' + locationInfo.Location + ' ' + 'Note: ' + locationInfo.Note
    }));
 };
-$(document).ready(function() {
-  $.get('/maraplace', function(data) {
-    for (var i = 0; i < data.length; i++) {
-      addLocation(data[i]);
-    }
-    console.log(data);
-  });
-  // button
-  $('button').click(function(){
+
+var submitData = function() {
     var locationInfo = { 
-      'Location': $('#location').val(),
-      'Note': $('#note').val(),
+      'Location': $('#location-to-save').text(),
+      'Note': $('#note-to-save').val(),
       'Date': new Date()
     }
     $.post('/maraplace', JSON.stringify(locationInfo))
@@ -101,6 +94,13 @@ $(document).ready(function() {
         console.log(data);
         $('#status_message').text('Submission failed.');
       })
+}
+$(document).ready(function() {
+  $.get('/maraplace', function(data) {
+    for (var i = 0; i < data.length; i++) {
+      addLocation(data[i]);
+    }
+    console.log(data);
   });
 });
 // [end of manual_input]
@@ -122,11 +122,25 @@ var makeIconImage = function(iconUrl) {
   }
 };
 
+var makeBubbleHtml = function(location) {
+   return '' +
+     '<div>Location:</div>' +
+     '<div><label id="location-to-save">' + location + '</label></div>' +
+     '<div>Optional message:</div>' +
+     '<div><textarea id="note-to-save" rows="5" cols="24"></textarea></div>' +
+     '<button onclick="submitData()">Submit location</button>';
+}
+
 var globals = {
   map: null,
   markers: [],
   bounds: new google.maps.LatLngBounds(),
-  heartImage: makeIconImage("http://b.dryicons.com/images/icon_sets/valentines_icons_set/png/256x256/heart.png")
+  heartImage: makeIconImage("http://b.dryicons.com/images/icon_sets/valentines_icons_set/png/256x256/heart.png"),
+  bestPlace: null,
+  infoWindow: new google.maps.InfoWindow({
+    content: makeBubbleHtml(''),
+    maxWidth: 240
+  })
 };
 
 var addMarker = function(name, iconImage, location) {
@@ -134,7 +148,12 @@ var addMarker = function(name, iconImage, location) {
     map: globals.map,
     icon: iconImage,
     title: name,
-    position: location
+    position: location,
+    draggable: true
+  });
+  google.maps.event.addListener(marker, 'click', function() {
+    globals.infoWindow.content = makeBubbleHtml(location);
+    globals.infoWindow.open(map, marker);
   });
   globals.markers.push(marker);
   globals.bounds.extend(location);
@@ -194,8 +213,8 @@ function initialize() {
 
     // For the first object, add a heart marker.
     if (places.length > 0) {
-      var firstPlace = places[0];
-      addHeartMarker(firstPlace.name, firstPlace.geometry.location);
+      globals.bestPlace = places[0];
+      addHeartMarker(globals.bestPlace.name, globals.bestPlace.geometry.location);
     }
     refitBounds();
   });
@@ -220,7 +239,7 @@ google.maps.event.addDomListener(window, 'load', initialize);
     <div id="side-bar">
       <div><textarea id="location" rows="1" cols="30"></textarea></div>
       <div><textarea id="note" rows="5" cols="30"></textarea></div>
-      <button>Submit location</button>
+      <!--<button>Submit location</button>-->
       <span id="status_message"></span>
       <!-- Database listing -->
       <ul id="entries">
