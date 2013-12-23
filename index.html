@@ -162,7 +162,7 @@ var globals = {
   bounds: new google.maps.LatLngBounds(),
   staticHeartImage: makeIconImage(makeDriveDirectUrl(heart32x32)),
   heartImage: makeIconImage(makeDriveDirectUrl(heartSearch32x32)),
-  bestPlace: null,
+  searchResultMarker: null,
   infoWindow: new google.maps.InfoWindow({
     content: makeBubbleHtml(''),
     maxWidth: 240
@@ -208,10 +208,16 @@ var addMarker = function(name, iconImage, location) {
   globals.bounds.extend(location);
   globals.infoWindow.content = makeBubbleHtml(marker.position);
   globals.infoWindow.open(map, marker);
+  return marker;
 }
 
 var addHeartMarker = function(name, location) {
-  addMarker(name, globals.heartImage, location);
+  // Remove previous marker.
+  if (globals.searchResultMarker) {
+    globals.searchResultMarker.setMap(null);
+    globals.searchResultMarker = null;
+  } 
+  globals.searchResultMarker = addMarker(name, globals.heartImage, location);
 }
 
 var refitBounds = function() {
@@ -277,11 +283,11 @@ function initialize() {
     console.log(places);
     var bounds = new google.maps.LatLngBounds();
 
-    // For the first object, add a heart marker.
+    // For the first object, add a draggable heart marker.
     if (places.length > 0) {
-      globals.bestPlace = places[0];
-      addHeartMarker(globals.bestPlace.name, globals.bestPlace.geometry.location);
-      bounds.extend(globals.bestPlace.geometry.location);
+      var place = places[0]; 
+      addHeartMarker(place.name, place.geometry.location);
+      bounds.extend(place.geometry.location);
       map.fitBounds(bounds);
     }
   });
