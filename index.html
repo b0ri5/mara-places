@@ -76,8 +76,6 @@
         font-size: 13px;
         font-weight: 300;
       }
-}
-
   </style>
 
   <script type="text/javascript"
@@ -204,6 +202,8 @@ var addMarker = function(name, iconImage, location) {
   });
   globals.markers.push(marker);
   globals.bounds.extend(location);
+  globals.infoWindow.content = makeBubbleHtml(marker.position);
+  globals.infoWindow.open(map, marker);
 }
 
 var addHeartMarker = function(name, location) {
