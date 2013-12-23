@@ -163,10 +163,8 @@ var globals = {
   staticHeartImage: makeIconImage(makeDriveDirectUrl(heart32x32)),
   heartImage: makeIconImage(makeDriveDirectUrl(heartSearch32x32)),
   searchResultMarker: null,
-  infoWindow: new google.maps.InfoWindow({
-    content: makeBubbleHtml(''),
-    maxWidth: 240
-  })
+  infoWindow: null,
+  staticInfoWindow: null
 };
 
 var addStaticMarker = function(text, location) {
@@ -178,11 +176,15 @@ var addStaticMarker = function(text, location) {
     draggable: false
   });
   google.maps.event.addListener(marker, 'click', function() {
-    var staticInfoWindow = new google.maps.InfoWindow({
+    // Remove the previous window.
+    if (globals.staticInfoWindow) {
+      globals.staticInfoWindow.close();
+    }
+    globals.staticInfoWindow = new google.maps.InfoWindow({
       content: makeStaticBubbleHtml(location, text),
       maxWidth: 240
     });
-    staticInfoWindow.open(map, marker);
+    globals.staticInfoWindow.open(map, marker);
   });
   globals.markers.push(marker);
   globals.bounds.extend(location);
@@ -197,7 +199,13 @@ var addMarker = function(name, iconImage, location) {
     draggable: true
   });
   google.maps.event.addListener(marker, 'click', function() {
-    globals.infoWindow.content = makeBubbleHtml(marker.position);
+    if (globals.infoWindow) {
+      globals.infoWindow.close();
+    }
+    globals.infoWindow = new google.maps.InfoWindow({
+      content: makeBubbleHtml(marker.position),
+      maxWidth: 240
+    });
     globals.infoWindow.open(map, marker);
   });
   google.maps.event.addListener(marker, 'dragend', function() {
@@ -206,8 +214,6 @@ var addMarker = function(name, iconImage, location) {
   });
   globals.markers.push(marker);
   globals.bounds.extend(location);
-  globals.infoWindow.content = makeBubbleHtml(marker.position);
-  globals.infoWindow.open(map, marker);
   return marker;
 }
 
