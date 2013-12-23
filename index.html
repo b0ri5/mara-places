@@ -249,14 +249,6 @@ function initialize() {
     console.log(places);
     globals.bounds = new google.maps.LatLngBounds();
 
-    //clearMarkers();
-    /*
-    // For each place add a corresponding marker.
-    for (var i = 0, place; place = places[i]; i++) {
-      addMarker(place.name, makeIconImage(place.icon), place.geometry.location);
-    }
-*/
-
     // For the first object, add a heart marker.
     if (places.length > 0) {
       globals.bestPlace = places[0];
@@ -274,7 +266,7 @@ function initialize() {
   });
 
 // Retrieve all previous data from the server.
-  $.get('/maraplace', function(data) {
+/**  $.get('/maraplace', function(data) {
     for (var i = 0; i < data.length; i++) {
       addLocation(data[i]);
       console.log(data[i].Location);
@@ -284,7 +276,32 @@ function initialize() {
       }
     }
     console.log(data);
+  }); **/
+  var success = function(data) {
+    for (var i = 0; i < data.length; i++) {
+      addLocation(data[i]);
+      console.log(data[i].Location);
+      var latLng = parseLatLng(data[i].Location);
+      if (latLng) {
+        addStaticMarker(data[i].Note, latLng);
+      }
+    }
+    console.log(data);
+  };
+  $.ajax({
+    url: '/maraplace',
+    success: success,
+    async: false
   });
+  for (var i = 0; i < globals.markers.length; i++) {
+
+  }
+  var defaultBounds = new google.maps.LatLngBounds(
+      new google.maps.LatLng(-33.8902, 151.1759),
+      new google.maps.LatLng(-33.8474, 151.2631));
+  map.fitBounds(defaultBounds);
+
+
 
 }
 
