@@ -102,13 +102,22 @@ var submitData = function() {
 // feature. People can enter geographical searches. The search box will return a
 // pick list containing a mix of places and predicted search terms.
 
+// File IDs from Drive.
+var heart16x16 = "0BxNifErMNm1ZS1Z1OElYbm1jVDg";
+var heart32x32 = "0BxNifErMNm1ZRjhBcTN1YzVIcWc";
+var heartSearch32x32 = "0BxNifErMNm1ZNUR3UXduTU9VUW8";
+
+var makeDriveDirectUrl = function(fileId) {
+  return "https://docs.google.com/uc?export=download&id=" + fileId;
+}
+
 var makeIconImage = function(iconUrl) {
   return {
     url: iconUrl,
-    size: new google.maps.Size(71, 71),
+    size: new google.maps.Size(32, 32),
     origin: new google.maps.Point(0, 0),
     anchor: new google.maps.Point(17, 34),
-    scaledSize: new google.maps.Size(25, 25)
+    scaledSize: new google.maps.Size(32, 32)
   }
 };
 
@@ -134,7 +143,8 @@ var globals = {
   map: null,
   markers: [],
   bounds: new google.maps.LatLngBounds(),
-  heartImage: makeIconImage("http://b.dryicons.com/images/icon_sets/valentines_icons_set/png/256x256/heart.png"),
+  staticHeartImage: makeIconImage(makeDriveDirectUrl(heart32x32)),
+  heartImage: makeIconImage(makeDriveDirectUrl(heartSearch32x32)),
   bestPlace: null,
   infoWindow: new google.maps.InfoWindow({
     content: makeBubbleHtml(''),
@@ -145,7 +155,7 @@ var globals = {
 var addStaticMarker = function(text, location) {
   var marker = new google.maps.Marker({
     map: globals.map,
-    icon: globals.heartImage,
+    icon: globals.staticHeartImage,
     title: text,
     position: location,
     draggable: false
