@@ -34,16 +34,25 @@
       ul {
         list-style-image: url(https://docs.google.com/uc?export=download&id=0BxNifErMNm1ZR3BveHRHVFlIQUk);
         list-style-type: circle;
+        list-style-position: inside;
+        margin-left: -35px;
+	color: rgb(64, 64, 64);
       }
       li {
-        padding: 4px;
-        margin-bottom: 2px;
+        padding: 5px;
+        margin-bottom: 5px;
         margin-right: 5px;
-        background: whitesmoke;
+        background: white;
         border: 1px;
         border-color: rgb(234, 220, 220);
         border-style: solid;
         border-radius: 3px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      li:first-letter {
+        text-transform: uppercase;
       }
       button {
         font-family: Roboto, arial, sans-serif;
