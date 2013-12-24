@@ -122,7 +122,7 @@ var addEntryToList = function(locationInfo) {
 var submitData = function() {
     var locationInfo = { 
       'Location': $('#location-to-save').text(),
-      'Note': $('#note-to-save').val(),
+      'Note': $.trim($('#note-to-save').val()),
       'Date': new Date()
     }
     $.post('/maraplace', JSON.stringify(locationInfo))
