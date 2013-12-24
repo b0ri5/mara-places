@@ -7,6 +7,8 @@
       html, body {
         margin: 0px;
         padding: 0px;
+        -webkit-font-smoothing: antialiased;
+	color: rgb(64, 64, 64);
       }
       #map-canvas {
         height: 100%;
@@ -36,9 +38,8 @@
         list-style-type: circle;
         list-style-position: inside;
         margin-left: -35px;
-	color: rgb(64, 64, 64);
       }
-      li {
+      #entries li {
         padding: 5px;
         margin-bottom: 5px;
         margin-right: 5px;
@@ -51,8 +52,22 @@
         /* white-space: nowrap; */
         overflow: hidden;
       }
-      li:first-letter {
+      #entries li:first-letter {
         text-transform: uppercase;
+      }
+      ol {
+        padding-top: 15px;
+        padding-left: 35px;
+        border-style: none;
+      }
+      ol > li {
+        padding-top: 5px;
+      }
+      .instructions {
+        padding-left: 10px;
+      }
+      .centered {
+        text-align: center;
       }
       button {
         font-family: Roboto, arial, sans-serif;
@@ -68,8 +83,7 @@
         text-transform: capitalize;
       } 
       #see-all {
-        margin-top: 16px;
-        margin-left: 16px;
+        margin-top: 10px;
       }
       #pac-input {
         background-color: #fff;
@@ -380,9 +394,24 @@ google.maps.event.addDomListener(window, 'load', initialize);
     <div id="map-canvas"></div>
     <!-- Manual input -->
     <div id="side-bar">
-      <div>
+      <div class="instructions">
+          <ol>
+            <li>Search the map for:
+              <ul>
+                <li>a place you love</li>
+                <li>a place you witnessed love</li>
+                <li>a place you felt loved</li>
+              </ul>
+            </li>
+            <li>Drag and drop the heart to the location you want <br>(Hint: satellite view might help)</li>
+            <li>Add a small message, and submit!</li>
+          </ol>
+          Add as many places as you would like.<br>
+          We store and display only the location and the note.
+        </div>
+        <div class="centered">
         <button id="see-all" onclick="refitBounds()">See all hearts</button>
-      </div>
+        </div>
       <!--<button>Submit location</button>-->
       <span id="status_message"></span>
       <!-- Database listing -->
