@@ -102,7 +102,7 @@ func getPlace(w http.ResponseWriter, r *http.Request) {
     // a slight chance that Greeting that had just been written would not
     // show up in a query.
     limit := 1000
-    q := datastore.NewQuery("Place").Ancestor(placeKey(c)).Order("-Date").Limit(limit)
+    q := datastore.NewQuery("Place").Ancestor(placeKey(c)).Order("Date").Limit(limit)
     places := make([]Place, 0, limit)
     if _, err := q.GetAll(c, &places); err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
