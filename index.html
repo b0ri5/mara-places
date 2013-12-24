@@ -206,7 +206,7 @@ var makeBubbleHtml = function(location) {
    return '' +
      '<div><label id="location-to-save" style="display:none">' + location + '</label></div>' +
      '<div>Optional message:</div>' +
-     '<div><textarea id="note-to-save" rows="5" cols="24"></textarea></div>' +
+     '<div><textarea id="note-to-save" rows="5" cols="24" maxlength=400></textarea></div>' +
      '<button onclick="submitData()">Submit location</button>';
 }
 
