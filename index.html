@@ -2,7 +2,7 @@
   <head>
     <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
     <meta charset="utf-8">
-    <link rel="icon" type="image/png" href="https://docs.google.com/uc?export=download&id=0BxNifErMNm1ZQVptT2dWcUhEYjQ">
+    <link rel="icon" type="image/png" href="/static/world_love_16x16.png">
     <style>
       html, body {
         margin: 0px;
@@ -32,7 +32,7 @@
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
       }
       ul {
-        list-style-image: url(https://docs.google.com/uc?export=download&id=0BxNifErMNm1ZR3BveHRHVFlIQUk);
+        list-style-image: url(/static/pinned_heart_16x16.png);
         list-style-type: circle;
         list-style-position: inside;
         margin-left: -35px;
@@ -153,12 +153,12 @@ var submitData = function() {
 // pick list containing a mix of places and predicted search terms.
 
 // File IDs from Drive.
-var heart16x16 = "0BxNifErMNm1ZS1Z1OElYbm1jVDg";
-var heart32x32 = "0BxNifErMNm1ZRjhBcTN1YzVIcWc";
-var heartSearch32x32 = "0BxNifErMNm1ZNUR3UXduTU9VUW8";
+var heart16x16 = "heart_16x16.png";
+var heart32x32 = "heart_32x32.png";
+var heartSearch32x32 = "heart_search_32x32.png";
 
 var makeDriveDirectUrl = function(fileId) {
-  return "https://docs.google.com/uc?export=download&id=" + fileId;
+  return '/static/' + fileId
 }
 
 var makeIconImage = function(iconUrl) {
