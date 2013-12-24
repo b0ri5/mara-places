@@ -39,7 +39,15 @@
         list-style-position: inside;
         margin-left: -35px;
       }
+      #entries {
+        height: 40%;
+        overflow: auto;
+      }
       #entries li {
+        height: 20px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
         padding: 5px;
         margin-bottom: 5px;
         margin-right: 5px;
@@ -51,9 +59,6 @@
         text-overflow: ellipsis;
         /* white-space: nowrap; */
         overflow: hidden;
-      }
-      #entries li:first-letter {
-        text-transform: uppercase;
       }
       ol {
         /*padding-top: 15px;*/
@@ -134,14 +139,6 @@
   </script>
 
   <script type="text/javascript">
-// Functions for manual_input
-var addEntryToList = function(locationInfo) {
-   if (locationInfo.Note) {
-     $('#entries').prepend($('<li>', {
-       text: locationInfo.Note
-     }));
-   }
-};
 
 var submitData = function() {
     var locationInfo = { 
@@ -151,9 +148,6 @@ var submitData = function() {
     }
     $.post('/worldlove', JSON.stringify(locationInfo))
 	  .success(function(data, status){
-        // $('#status_message').text('Data submitted: ' + status);
-        //addEntryToList(locationInfo);
-        // add static marker speculatively
         // make a get request.
         $.ajax({
           url: '/worldlove',
@@ -221,6 +215,24 @@ var globals = {
   staticInfoWindow: null
 };
 
+var openStaticBubbleCallback = function(marker, location, text) {
+  return function() {
+    openStaticBubble(marker, location, text);
+  }
+}
+
+var openStaticBubble = function(marker, location, text) {
+  // Remove the previous window.
+  if (globals.staticInfoWindow) {
+    globals.staticInfoWindow.close();
+  }
+  globals.staticInfoWindow = new google.maps.InfoWindow({
+    content: makeStaticBubbleHtml(location, text),
+    maxWidth: 240
+  });
+  globals.staticInfoWindow.open(globals.map, marker);
+}
+
 var addStaticMarker = function(text, location) {
   var marker = new google.maps.Marker({
     map: globals.map,
@@ -229,19 +241,10 @@ var addStaticMarker = function(text, location) {
     position: location,
     draggable: false
   });
-  google.maps.event.addListener(marker, 'click', function() {
-    // Remove the previous window.
-    if (globals.staticInfoWindow) {
-      globals.staticInfoWindow.close();
-    }
-    globals.staticInfoWindow = new google.maps.InfoWindow({
-      content: makeStaticBubbleHtml(location, text),
-      maxWidth: 240
-    });
-    globals.staticInfoWindow.open(map, marker);
-  });
+  google.maps.event.addListener(marker, 'click', openStaticBubbleCallback(marker, location, text));
   globals.markers.push(marker);
   globals.bounds.extend(location);
+  return marker;
 }
 
 var openBubble = function(marker) {
@@ -318,16 +321,25 @@ function parseLatLng(latLngString) {
   return new google.maps.LatLng(lat, lng);
 }
 
+var addEntryToList = function(location, note, marker) {
+   if (note) {
+     $('#entries').prepend($('<li>', {
+       click: openStaticBubbleCallback(marker, location, note),
+       text: note
+     }));
+   }
+};
+
 // Retrieve all previous data from the server.
 var addEntriesFromDb = function(data) {
   $('#entries').empty();
   clearMarkers();
   for (var i = 0; i < data.length; i++) {
-    addEntryToList(data[i]);
     console.log(data[i].Location);
     var latLng = parseLatLng(data[i].Location);
-     if (latLng) {
-      addStaticMarker(data[i].Note, latLng);
+    if (latLng) {
+      var marker = addStaticMarker(data[i].Note, latLng);
+      addEntryToList(latLng, data[i].Note, marker);
     }
   }
   console.log(data);
