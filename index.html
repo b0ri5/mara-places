@@ -350,7 +350,9 @@ function initialize() {
 
   var markers = [];
   globals.map = new google.maps.Map(document.getElementById('map-canvas'), {
-    mapTypeId: google.maps.MapTypeId.ROADMAP
+    mapTypeId: google.maps.MapTypeId.ROADMAP,
+    minZoom: 1,
+    maxZoom: 18
   });
   map = globals.map;
 
