@@ -197,6 +197,7 @@ var makeStaticBubbleHtml = function(location, message) {
 }
 
 var makeBubbleHtml = function(location) {
+   console.log("Making at location " + location);
    return '' +
      '<div><label id="location-to-save" style="display:none">' + location + '</label></div>' +
      '<div>Optional message:</div>' +
@@ -259,24 +260,23 @@ var openBubble = function(marker) {
 }
 
 var addMarker = function(name, iconImage, location) {
-  var marker = new google.maps.Marker({
+  globals.searchResultMarker = new google.maps.Marker({
     map: globals.map,
     icon: iconImage,
     title: name,
     position: location,
     draggable: true
   });
-  google.maps.event.addListener(marker, 'click', function() {
-    openBubble(marker);
+  google.maps.event.addListener(globals.searchResultMarker, 'click', function() {
+    openBubble(globals.searchResultMarker);
   });
-  google.maps.event.addListener(marker, 'dragend', function() {
-    globals.infoWindow.content = makeBubbleHtml(marker.position);
-    globals.infoWindow.open(map, marker);
+  google.maps.event.addListener(globals.searchResultMarker, 'dragend', function() {
+    globals.infoWindow.content = makeBubbleHtml(globals.searchResultMarker.position);
+    globals.infoWindow.open(map, globals.searchResultMarker);
   });
-  globals.markers.push(marker);
+  globals.markers.push(globals.searchResultMarker);
   globals.bounds.extend(location);
-  openBubble(marker);
-  return marker;
+  openBubble(globals.searchResultMarker);
 }
 
 var addHeartMarker = function(name, location) {
@@ -284,8 +284,9 @@ var addHeartMarker = function(name, location) {
   if (globals.searchResultMarker) {
     globals.searchResultMarker.setMap(null);
     globals.searchResultMarker = null;
-  } 
-  globals.searchResultMarker = addMarker(name, globals.heartImage, location);
+  }
+  //globals.searchResultMarker = addMarker(name, globals.heartImage, location);
+  addMarker(name, globals.heartImage, location);
 }
 
 var refitBounds = function() {
