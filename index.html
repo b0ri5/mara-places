@@ -34,7 +34,7 @@
         box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
       }
       ul {
-        list-style-image: url(/static/pinned_heart_16x16.png);
+        list-style-image: url(/static/heart_16x16.png);
         list-style-type: circle;
         list-style-position: inside;
         margin-left: -35px;
@@ -56,15 +56,25 @@
         text-transform: uppercase;
       }
       ol {
-        padding-top: 15px;
+        /*padding-top: 15px;*/
         padding-left: 35px;
         border-style: none;
       }
       ol > li {
-        padding-top: 5px;
+        padding-bottom: 5px;
       }
       .instructions {
         padding-left: 10px;
+      }
+      .note {
+        padding-left: 10px;
+      }
+      .section-label {
+        padding-top: 25px;
+        padding-left: 5px;
+        margin-bottom: -10px;
+        font-weight: bold;
+	color: rgb(64, 64, 64);
       }
       .centered {
         text-align: center;
@@ -394,27 +404,30 @@ google.maps.event.addDomListener(window, 'load', initialize);
     <div id="map-canvas"></div>
     <!-- Manual input -->
     <div id="side-bar">
-      <div class="instructions">
-          <ol>
-            <li>Search the map for:
-              <ul>
-                <li>a place you love</li>
-                <li>a place you witnessed love</li>
-                <li>a place you felt loved</li>
-              </ul>
-            </li>
-            <li>Drag and drop the heart to the location you want <br>(Hint: satellite view might help)</li>
-            <li>Add a small message, and submit!</li>
-          </ol>
-          Add as many places as you would like.<br>
-          We store and display only the location and the note.
-        </div>
-        <div class="centered">
+      <div class="centered">
         <button id="see-all" onclick="refitBounds()">See all hearts</button>
-        </div>
-      <!--<button>Submit location</button>-->
+      </div>
       <span id="status_message"></span>
+      <div class="instructions">
+        <ol>
+          <li>Search the map for:
+            <ul>
+              <li>a place you love</li>
+              <li>a place you witnessed love</li>
+              <li>a place you felt loved</li>
+            </ul>
+          </li>
+          <li>Drag and drop the heart to the location you want <br>(Hint: satellite view might help)</li>
+          <li>Add a small message, and submit!</li>
+        </ol>
+      </div>
+      <div class="note">
+        Add as many places as you would like!<br>
+        We store and display only the location and the note.
+      </div>
+
       <!-- Database listing -->
+      <div class="section-label"> Recent pins </div>
       <ul id="entries">
     </div>
   </body>
