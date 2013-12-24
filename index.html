@@ -127,8 +127,16 @@ var submitData = function() {
     }
     $.post('/maraplace', JSON.stringify(locationInfo))
 	  .success(function(data, status){
-        $('#status_message').text('Data submitted: ' + status);
-        addEntryToList(locationInfo);
+        // $('#status_message').text('Data submitted: ' + status);
+        //addEntryToList(locationInfo);
+        // add static marker speculatively
+        // make a get request.
+        $.ajax({
+          url: '/maraplace',
+          success: addEntriesFromDb,
+          async: true
+        });
+
       })
       .fail(function(data){
         console.log(data);
@@ -172,8 +180,7 @@ var makeStaticBubbleHtml = function(location, message) {
 
 var makeBubbleHtml = function(location) {
    return '' +
-     '<div>Location:</div>' +
-     '<div><label id="location-to-save">' + location + '</label></div>' +
+     '<div><label id="location-to-save" style="display:none">' + location + '</label></div>' +
      '<div>Optional message:</div>' +
      '<div><textarea id="note-to-save" rows="5" cols="24"></textarea></div>' +
      '<button onclick="submitData()">Submit location</button>';
@@ -259,9 +266,9 @@ var refitBounds = function() {
 }
 
 var clearMarkers = function() {
-  /*for (var i = 0, marker; marker = globals.markers[i]; i++) {
+  for (var i = 0, marker; marker = globals.markers[i]; i++) {
     marker.setMap(null);
-  }*/
+  }
   globals.markers = [];
   globals.bounds = new google.maps.LatLngBounds();
 }
@@ -286,6 +293,21 @@ function parseLatLng(latLngString) {
   }
   return new google.maps.LatLng(lat, lng);
 }
+
+// Retrieve all previous data from the server.
+var addEntriesFromDb = function(data) {
+  $('#entries').empty();
+  clearMarkers();
+  for (var i = 0; i < data.length; i++) {
+    addEntryToList(data[i]);
+    console.log(data[i].Location);
+    var latLng = parseLatLng(data[i].Location);
+     if (latLng) {
+      addStaticMarker(data[i].Note, latLng);
+    }
+  }
+  console.log(data);
+};
 
 function initialize() {
 
@@ -334,21 +356,9 @@ function initialize() {
     searchBox.setBounds(bounds);
   });
 
-  // Retrieve all previous data from the server.
-  var success = function(data) {
-    for (var i = 0; i < data.length; i++) {
-      addEntryToList(data[i]);
-      console.log(data[i].Location);
-      var latLng = parseLatLng(data[i].Location);
-      if (latLng) {
-        addStaticMarker(data[i].Note, latLng);
-      }
-    }
-    console.log(data);
-  };
   $.ajax({
     url: '/maraplace',
-    success: success,
+    success: addEntriesFromDb,
     async: false
   });
   if (globals.markers.length > 0) {
