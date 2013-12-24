@@ -101,7 +101,7 @@ func getPlace(w http.ResponseWriter, r *http.Request) {
     // consistent. If we omitted the .Ancestor from this query there would be
     // a slight chance that Greeting that had just been written would not
     // show up in a query.
-    limit := 100
+    limit := 1000
     q := datastore.NewQuery("Place").Ancestor(placeKey(c)).Order("-Date").Limit(limit)
     places := make([]Place, 0, limit)
     if _, err := q.GetAll(c, &places); err != nil {
