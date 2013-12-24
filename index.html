@@ -125,14 +125,14 @@ var submitData = function() {
       'Note': $.trim($('#note-to-save').val()),
       'Date': new Date()
     }
-    $.post('/maraplace', JSON.stringify(locationInfo))
+    $.post('/worldlove', JSON.stringify(locationInfo))
 	  .success(function(data, status){
         // $('#status_message').text('Data submitted: ' + status);
         //addEntryToList(locationInfo);
         // add static marker speculatively
         // make a get request.
         $.ajax({
-          url: '/maraplace',
+          url: '/worldlove',
           success: addEntriesFromDb,
           async: true
         });
@@ -357,7 +357,7 @@ function initialize() {
   });
 
   $.ajax({
-    url: '/maraplace',
+    url: '/worldlove',
     success: addEntriesFromDb,
     async: false
   });

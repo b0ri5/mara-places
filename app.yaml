@@ -4,9 +4,7 @@ runtime: go
 api_version: go1
 
 handlers:
-- url: /place
-  script: _go_app
-- url: /maraplace
+- url: /worldlove
   script: _go_app
 - url: /
   static_files: index.html
