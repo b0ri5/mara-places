@@ -34,6 +34,25 @@
       ul {
         list-style-image: url(https://docs.google.com/uc?export=download&id=0BxNifErMNm1ZR3BveHRHVFlIQUk);
         list-style-type: circle;
+        list-style-position: inside;
+        margin-left: -35px;
+	color: rgb(64, 64, 64);
+      }
+      li {
+        padding: 5px;
+        margin-bottom: 5px;
+        margin-right: 5px;
+        background: white;
+        border: 1px;
+        border-color: rgb(234, 220, 220);
+        border-style: solid;
+        border-radius: 3px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      li:first-letter {
+        text-transform: uppercase;
       }
       button {
         font-family: Roboto, arial, sans-serif;
@@ -88,10 +107,12 @@
 
   <script type="text/javascript">
 // Functions for manual_input
-var addLocation = function(locationInfo) {
-   $('#entries').prepend($('<li>', {
-     text: 'Location: ' + locationInfo.Location + ' ' + 'Note: ' + locationInfo.Note
-   }));
+var addEntryToList = function(locationInfo) {
+   if (locationInfo.Note) {
+     $('#entries').prepend($('<li>', {
+       text: locationInfo.Note
+     }));
+   }
 };
 
 var submitData = function() {
@@ -103,7 +124,7 @@ var submitData = function() {
     $.post('/maraplace', JSON.stringify(locationInfo))
 	  .success(function(data, status){
         $('#status_message').text('Data submitted: ' + status);
-        addLocation(locationInfo);
+        addEntryToList(locationInfo);
       })
       .fail(function(data){
         console.log(data);
@@ -139,12 +160,10 @@ var makeIconImage = function(iconUrl) {
 };
 
 var makeStaticBubbleHtml = function(location, message) {
-   var bubbleHtml = '' +
-     '<div>Location:' + location + '</div>';
   if (message) {
-     bubbleHtml = bubbleHtml + '<div>' + message + '</div>' 
+     return '<div>' + message + '</div>' 
   }
-  return bubbleHtml;
+  return '<3';
 }
 
 var makeBubbleHtml = function(location) {
@@ -314,7 +333,7 @@ function initialize() {
   // Retrieve all previous data from the server.
   var success = function(data) {
     for (var i = 0; i < data.length; i++) {
-      addLocation(data[i]);
+      addEntryToList(data[i]);
       console.log(data[i].Location);
       var latLng = parseLatLng(data[i].Location);
       if (latLng) {
